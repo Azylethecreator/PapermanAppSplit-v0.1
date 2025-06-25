@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paperman - Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- KaTeX CSS must be in head section -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+</head>
+<body class="dark-theme">
+    <!-- Sign-in Screen -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-brand">PAPERMAN</h1>
+            <p class="auth-subtitle">Welcome to Paperman</p>
+            <p class="auth-description">Sign in to continue</p>
+            <button id="google-signin-btn" class="google-signin-button">
+                <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                    <path fill="#FBBC04" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.039l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
+                </svg>
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div id="quiz-container" class="quiz-container" style="display: none;">
+        <header class="quiz-header">
+            <button class="theme-button" onclick="toggleTheme()" title="Toggle Theme">
+                <svg class="theme-icon moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg class="theme-icon sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="theme-icon hacker-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+                <svg class="theme-icon gem-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 3h12l4 6-10 13L2 9l4-6z"/>
+                    <path d="M11 3 8 9l4 13 4-13-3-6"/>
+                    <path d="M2 9h20"/>
+                </svg>
+                <svg class="theme-icon cloud-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                </svg>
+                <svg class="theme-icon cat-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3.1-9-7.56c0-1.25.4-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"/>
+                    <path d="M8 14v.5"/>
+                    <path d="M16 14v.5"/>
+                    <path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/>
+                </svg>
+                <svg class="theme-icon nebula-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6"/>
+                    <path d="m4.22 4.22 1.42 1.42m1.42 1.42L4.22 4.22"/>
+                    <path d="M1 12h6m6 0h6"/>
+                    <path d="m4.22 19.78 1.42-1.42m1.42-1.42L4.22 19.78"/>
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m8 12 2 2 4-4"/>
+                </svg>
+                <svg class="theme-icon mohawk-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2 8 6h8l-4-4z"/>
+                    <path d="M10 6 8 8h8l-2-2"/>
+                    <path d="M8 8 6 10h12l-2-2"/>
+                    <path d="M6 10v4a6 6 0 0 0 12 0v-4"/>
+                    <circle cx="9" cy="15" r="1"/>
+                    <circle cx="15" cy="15" r="1"/>
+                    <path d="M9 18h6"/>
+                </svg>
+            </button>
+            <h1 class="brand">PAPERMAN</h1>
+            <p class="subtitle"></p>
+        </header>
+
+        <div id="selection-screen" class="quiz-content">
+            <div id="grade-selection">
+                <p class="select-title">Select Grade</p>
+                <div id="grade-buttons" class="selection-buttons">
+                    <button class="selection-button" onclick="selectGrade(12)">12</button>
+                    <button class="selection-button" onclick="selectGrade(11)">11</button>
+                    <button class="selection-button" onclick="selectGrade(10)">10</button>
+                    <button class="selection-button" onclick="selectGrade(9)">9</button>
+                    <button class="selection-button" onclick="selectGrade(8)">8</button>
+                </div>
+                <button id="signout-button" class="signout-button" onclick="signOutUser()">Sign Out</button>
+            </div>
+            
+            <div id="subject-selection" style="display:none;">
+                <p class="select-title">Select Subject</p>
+                <div id="subject-buttons" class="selection-buttons"></div>
+                <button id="back-to-grades" class="back-button" onclick="showGradeSelection()">Back</button>
+            </div>
+
+            <div id="quiz-type-selection" style="display:none;">
+                <p class="select-title">Choose Your Learning Path</p>
+                <div class="quiz-type-cards">
+                    <div class="quiz-type-card past-papers-card" onclick="selectQuizType('past-papers')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
+                                <path d="M7 10h10"/>
+                                <path d="M7 14h10"/>
+                                <path d="M7 18h10"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Past Papers</h3>
+                        <p class="card-description">Real exam papers beautifully redesigned with interactive memo reveals</p>
+                        <div class="card-badge aesthetic">AESTHETIC REDESIGN</div>
+                    </div>
+
+                    <div class="quiz-type-card" onclick="selectQuizType('past-paper')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Past Paper Based Quiz</h3>
+                        <p class="card-description">Practice with real exam questions from previous years</p>
+                        <div class="card-badge">EXAM PREP</div>
+                    </div>
+
+                    <div class="quiz-type-card" onclick="selectQuizType('paperman-quiz')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Paperman Quiz</h3>
+                        <p class="card-description">Interactive quizzes designed to test your understanding</p>
+                        <div class="card-badge">RECOMMENDED</div>
+                    </div>
+
+                    <div class="quiz-type-card" onclick="selectQuizType('paperman-notes')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                <line x1="12" y1="6" x2="16" y2="6"></line>
+                                <line x1="12" y1="10" x2="16" y2="10"></line>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Paperman Notes</h3>
+                        <p class="card-description">Comprehensive study notes and summaries</p>
+                        <div class="card-badge">STUDY</div>
+                    </div>
+                </div>
+                <button id="back-to-subjects" class="back-button" onclick="showSubjectSelection()">Back</button>
+            </div>
+
+            <!-- Past Paper Year Selection -->
+            <div id="past-paper-year-selection" style="display:none;">
+                <p class="select-title">Select Year</p>
+                <div id="year-buttons" class="selection-buttons">
+                    <button class="selection-button" onclick="selectPastPaperYear(2025)">2025</button>
+                    <button class="selection-button" onclick="selectPastPaperYear(2024)">2024</button>
+                    <button class="selection-button" onclick="selectPastPaperYear(2023)">2023</button>
+                    <button class="selection-button" onclick="selectPastPaperYear(2022)">2022</button>
+                    <button class="selection-button" onclick="selectPastPaperYear(2021)">2021</button>
+                    <button class="selection-button" onclick="selectPastPaperYear(2020)">2020</button>
+                </div>
+                <button class="back-button" onclick="showQuizTypeSelection()">Back</button>
+            </div>
+
+            <!-- Region Selection -->
+<div id="region-selection" style="display:none;">
+    <p class="select-title">Select Region</p>
+    <div id="region-buttons" class="selection-buttons">
+        <button class="selection-button" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: bold;" onclick="selectRegion('national')">★ NATIONAL ★</button>
+        <button class="selection-button" onclick="selectRegion('eastern-cape')">Eastern Cape</button>
+        <button class="selection-button" onclick="selectRegion('free-state')">Free State</button>
+        <button class="selection-button" onclick="selectRegion('gauteng')">Gauteng</button>
+        <button class="selection-button" onclick="selectRegion('kzn')">KwaZulu-Natal</button>
+        <button class="selection-button" onclick="selectRegion('limpopo')">Limpopo</button>
+        <button class="selection-button" onclick="selectRegion('mpumalanga')">Mpumalanga</button>
+        <button class="selection-button" onclick="selectRegion('north-west')">North West</button>
+        <button class="selection-button" onclick="selectRegion('northern-cape')">Northern Cape</button>
+        <button class="selection-button" onclick="selectRegion('western-cape')">Western Cape</button>
+    </div>
+    <button class="back-button" onclick="showPastPaperYearSelection()">Back</button>
+</div>
+
+            <!-- NEW: Session Selection -->
+            <div id="session-selection" style="display:none;">
+                <p class="select-title">Select Session</p>
+                <div id="session-buttons" class="selection-buttons">
+                    <button class="selection-button" onclick="selectSession('March')">March</button>
+                    <button class="selection-button" onclick="selectSession('June')">June</button>
+                    <button class="selection-button" onclick="selectSession('September')">September</button>
+                    <button class="selection-button" onclick="selectSession('November')">November</button>
+                </div>
+                <button class="back-button" onclick="showPastPaperYearSelection()">Back</button>
+            </div>
+
+            <!-- NEW: Paper Selection -->
+            <div id="paper-selection" style="display:none;">
+                <p class="select-title">Select Paper</p>
+                <div id="paper-buttons" class="selection-buttons">
+                    <!-- Dynamically populated based on subject -->
+                </div>
+                <button class="back-button" onclick="showSessionSelection()">Back</button>
+            </div>
+
+            <!-- Category Selection -->
+            <div id="category-selection" style="display:none;">
+                <p class="select-title">Select Category</p>
+                <div id="category-buttons" class="selection-buttons">
+                    <p class="lead-text">Loading categories...</p>
+                </div>
+                <button id="back-to-quiz-type-from-category" class="back-button" onclick="showQuizTypeSelection()">Back</button>
+            </div>
+
+            <div id="topic-selection" style="display:none;">
+                <p class="select-title">Select Topic</p>
+                <div id="topic-buttons" class="selection-buttons">
+                    <p class="lead-text">Loading topics...</p>
+                </div>
+                <button id="back-to-categories" class="back-button" onclick="showCategorySelection()">Back</button>
+            </div>
+
+            <div id="quiz-mode-selection" style="display:none;">
+                <p class="select-title">Select Quiz Mode</p>
+                <div class="quiz-mode-cards">
+                    <div class="quiz-mode-card selected" data-mode="normal" onclick="selectQuizMode('normal')">
+                        <div class="mode-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <h3 class="mode-title">Normal</h3>
+                        <p class="mode-description">Take your time and review explanations</p>
+                        <div class="mode-features">
+                            <span class="feature">• Unlimited time</span>
+                            <span class="feature">• See explanations</span>
+                            <span class="feature">• Review answers</span>
+                        </div>
+                        <div class="mode-badge default">DEFAULT</div>
+                    </div>
+
+                    <div class="quiz-mode-card" data-mode="rapid" onclick="selectQuizMode('rapid')">
+                        <div class="mode-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                        </div>
+                        <h3 class="mode-title">Rapid Fire</h3>
+                        <p class="mode-description">Race against the clock for each question</p>
+                        <div class="mode-features">
+                            <span class="feature">• 5 seconds per question</span>
+                            <span class="feature">• Time bonus points</span>
+                            <span class="feature">• Quick review only</span>
+                        </div>
+                        <div class="mode-badge challenge">CHALLENGE</div>
+                    </div>
+
+                    <div class="quiz-mode-card" data-mode="sudden" onclick="selectQuizMode('sudden')">
+                        <div class="mode-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3 class="mode-title">Sudden Death</h3>
+                        <p class="mode-description">One wrong answer ends the quiz</p>
+                        <div class="mode-features">
+                            <span class="feature">• No mistakes allowed</span>
+                            <span class="feature">• High stakes</span>
+                            <span class="feature">• Maximum points</span>
+                        </div>
+                        <div class="mode-badge extreme">EXTREME</div>
+                    </div>
+                </div>
+                <button class="start-quiz-button" onclick="continueAfterMode()">Continue</button>
+                <button id="back-to-quiz-type" class="back-button" onclick="showQuizTypeSelection()">Back</button>
+            </div>
+
+            <div id="set-selection" style="display:none;">
+                <p class="select-title">Select Question Set</p>
+                <div id="set-buttons" class="selection-buttons">
+                    <button class="selection-button" onclick="selectSet(0)">Set 1</button>
+                    <button class="selection-button" onclick="selectSet(1)">Set 2</button>
+                    <button class="selection-button" onclick="selectSet(2)">Set 3</button>
+                </div>
+                <button class="back-button" onclick="showQuizModeSelection()">Back</button>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="quiz-content" style="display:none;">
+            <div class="quiz-mode-indicator" id="modeIndicator"></div>
+            <div class="timer-bar" id="timerBar" style="display:none;">
+                <div class="timer-fill" id="timerFill"></div>
+                <span class="timer-text" id="timerText">5s</span>
+            </div>
+            <div class="question-header">
+                <div class="question-number"></div>
+                <button class="hint-button" onclick="showHint()" title="Get a hint">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="2" x2="12" y2="6"></line>
+                        <line x1="12" y1="18" x2="12" y2="22"></line>
+                        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                        <line x1="2" y1="12" x2="6" y2="12"></line>
+                        <line x1="18" y1="12" x2="22" y2="12"></line>
+                        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                        <circle cx="12" cy="12" r="5"></circle>
+                    </svg>
+                </button>
+                <button class="cheat-button" onclick="useCheat()" title="Remove a wrong answer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="hint-box" id="hintBox">
+                <p class="hint-text"></p>
+            </div>
+
+            <div class="question"><h2></h2></div>
+            <div class="options"></div>
+            <div class="quiz-navigation">
+<button class="boost-button" onclick="showQuizBoost()">
+    <img src="/brain-icon.svg" width="20" height="20" alt="Brain" style="vertical-align: middle; margin-right: 8px;">
+    BOOST
+</button>
+                <button class="next-button" onclick="nextQuestion()">Next Question</button>
+            </div>
+            <div class="boost-box" id="quiz-boost-box"></div>
+        </div>
+
+        <div class="progress-bar" style="display:none;">
+            <div class="progress-fill" style="width: 0%"></div>
+        </div>
+
+        <div id="results-screen" class="quiz-content" style="display:none;"></div>
+
+        <!-- Snapshot View (Hidden by default) -->
+        <div class="snapshot-view" id="snapshot-view" style="display: none;">
+            <div class="snapshot-container">
+                <div class="snapshot-header">
+                    <h2 class="app-name">PAPERMAN</h2>
+                    <div class="decorative-line"></div>
+                </div>
+
+                <div class="topic-section">
+                    <p class="topic-label">TOPIC</p>
+                    <h3 class="topic-name"></h3>
+                </div>
+
+                <div class="result-section">
+                    <div class="grade-circle">
+                        <span class="grade">F</span>
+                    </div>
+
+                    <div class="score-details">
+                        <h1 class="big-percentage">0%</h1>
+                        <p class="score-breakdown">0 out of 0 correct</p>
+                    </div>
+                </div>
+
+                <div class="app-promotion">
+                    <p class="download-text">Download the Paperman App from Playstore</p>
+                </div>
+
+                <button class="close-snapshot" id="close-snapshot">✕</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notes-container" class="notes-container" style="display:none;">
+        <header class="notes-header">
+            <h1 class="brand">PAPERMAN</h1>
+            <p class="subtitle" id="notes-subtitle"></p>
+        </header>
+        <div class="topic-breadcrumb" id="notes-breadcrumb">
+            <span id="breadcrumb-grade" class="breadcrumb-item"></span>
+            <span class="breadcrumb-separator">›</span>
+            <span id="breadcrumb-subject" class="breadcrumb-item"></span>
+            <span class="breadcrumb-separator">›</span>
+            <span id="breadcrumb-category" class="breadcrumb-item"></span>
+            <span class="breadcrumb-separator">›</span>
+            <span id="breadcrumb-topic" class="breadcrumb-item active"></span>
+        </div>
+        <main class="notes-content">
+            <article class="note-article">
+                <h1 class="note-title" id="notes-title"></h1>
+                <div id="note-body"></div>
+            </article>
+        </main>
+        <footer class="notes-footer">
+            <button class="back-button" onclick="backToTopics()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Topics
+            </button>
+        </footer>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <!-- KaTeX JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+      import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDzp9qn8_M54VFv1RsLxIKeMRtNvZ2S6sA",
+        authDomain: "papermanapp-za.firebaseapp.com",
+        projectId: "papermanapp-za",
+        storageBucket: "papermanapp-za.firebasestorage.app",
+        messagingSenderId: "1046060247627",
+        appId: "1:1046060247627:web:a8954771673d1b57043bce",
+        measurementId: "G-E97W2PN1LS"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+
+      // Make Firebase accessible globally
+      window.firebaseDB = db;
+      window.firebaseAuth = auth;
+      window.firebaseProvider = provider;
+      window.signInWithPopup = signInWithPopup;
+      window.onAuthStateChanged = onAuthStateChanged;
+      window.signOut = signOut;
+      window.firestoreQuery = query;
+      window.firestoreWhere = where;
+      window.firestoreGetDocs = getDocs;
+      window.firestoreCollection = collection;
+      window.firestoreDoc = doc;
+      window.firestoreGetDoc = getDoc;
+      window.firestoreSetDoc = setDoc;
+      window.firestoreUpdateDoc = updateDoc;
+    </script>
+
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+
+<!-- Online Counter Pill -->
+<div id="online-counter" class="online-counter-pill">
+    <span class="online-dot"></span>
+    <span class="online-text">
+        <span id="online-count">0</span> online
+    </span>
+</div>
+
+<!-- Dev Panel (Only visible in dev mode) -->
+<div id="dev-panel" class="dev-panel" style="display: none;">
+    <div class="dev-panel-header">
+        <span>Dev Tools</span>
+        <button class="dev-close-btn" onclick="toggleDevPanel()">×</button>
+    </div>
+<div class="dev-panel-content">
+    <div class="dev-boost-info">
+        Boosts: <span id="dev-boost-count">100</span>
+    </div>
+    <button class="dev-refill-btn" onclick="refillBoosts()">Refill +5 Boosts</button>
+    
+    <div class="dev-divider"></div>
+    
+    <div class="dev-streak-info">
+        Current Streak: Day <span id="dev-streak-count">1</span>
+    </div>
+    <div class="dev-streak-controls">
+        <input type="number" id="dev-streak-input" min="0" max="30" value="1" class="dev-input">
+        <button class="dev-apply-btn" onclick="setDevStreak()">Set Day</button>
+    </div>
+<div class="dev-streak-shortcuts">
+        <button class="dev-shortcut-btn" onclick="jumpToDay(7)">Day 7</button>
+        <button class="dev-shortcut-btn" onclick="jumpToDay(14)">Day 14</button>
+        <button class="dev-shortcut-btn" onclick="jumpToDay(30)">Day 30</button>
+    </div>
+    
+    <div class="dev-divider"></div>
+    
+    <button class="dev-reset-calendar-btn" onclick="resetCalendar()">🔄 Reset Calendar</button>
+</div>
+
+<!-- Streak Display -->
+<div id="streak-display" class="streak-display" style="display: none;">
+    <span id="streak-text">Day 1 🔥</span>
+</div>
+
+<!-- Rewards Overview Modal -->
+<div id="rewards-overview-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container rewards-overview-container">
+        <div class="modal-content">
+            <div class="overview-header">
+                <h2 class="overview-title">Daily Login Rewards</h2>
+                <button class="close-overview-btn" onclick="closeRewardsOverview()">×</button>
+            </div>
+            
+            <div class="rewards-calendar" id="rewards-calendar">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            
+<div class="next-reward-timer">
+    <p class="timer-label">Next reward in</p>
+    <p class="countdown-display" id="next-reward-countdown">00:00:00</p>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Daily Login Bonus Modal -->
+<div id="daily-bonus-modal" class="modal-overlay" style="display: none;">
+    <div class="gradient-background"></div>
+    <div class="particles-container"></div>
+    <div class="modal-container bonus-modal">
+        <div class="modal-content">
+            <div class="bonus-header">
+                <h2 class="bonus-title">Daily Login Bonus!</h2>
+                <p class="bonus-day">Day <span id="current-day">1</span></p>
+            </div>
+
+            <!-- Success Modal -->
+<div id="boost-success-modal" class="success-modal-overlay" style="display: none;">
+    <div class="success-modal">
+        <img src="/brain-icon.svg" width="60" height="60" alt="Brain">
+        <p class="success-text">+<span id="success-boost-amount">0</span> Boosts Added!</p>
+    </div>
+</div>
+            
+<!-- Regular reward -->
+<div class="reward-regular" id="reward-regular" style="display: none;">
+    <div class="reward-icon">
+        <img src="/brain-icon.svg" width="120" height="120" alt="Brain">
+    </div>
+    <p class="boost-text-display"><span id="boost-number">5</span> Boosts</p>
+</div>
+                
+                <!-- Mystery box -->
+                <div class="mystery-box" id="mystery-box" style="display: none;">
+                    <div class="box-spinner" id="box-spinner">
+                        <div class="box-face">🎁</div>
+                        <div class="box-face">🎲</div>
+                        <div class="box-face">❓</div>
+                        <div class="box-face">✨</div>
+                    </div>
+                    <p class="mystery-text">Mystery Box!</p>
+                </div>
+                
+                <!-- Special reward (Day 30) -->
+                <div class="special-reward" id="special-reward" style="display: none;">
+                    <div class="reward-icon">🏆</div>
+                    <p class="reward-text">150 Boosts</p>
+                    <p class="reward-text">+ 1 Week LITE Tier!</p>
+                    <p class="champion-text">LOGIN CHAMPION!</p>
+                </div>
+            </div>
+            
+            <div class="streak-info">
+                <p class="streak-text">🔥 <span id="streak-count">1</span> Day Streak!</p>
+            </div>
+            
+            <button class="modal-btn claim-btn" onclick="claimDailyBonus()">
+                Claim Reward
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- No Boosts Modal -->
+<div id="no-boosts-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-content">
+            <h2 class="modal-title">Out of Boosts!</h2>
+            <p class="modal-text">No boosts remaining! Watch a 30 second ad to get 30 free boosts or Upgrade to get UNLIMITED BOOSTS.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn watch-ad-btn" onclick="closeNoBoostsModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Watch Ad (30s)
+                </button>
+                <button class="modal-btn upgrade-btn" onclick="closeNoBoostsModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                    </svg>
+                    Upgrade to Lite (R100)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Boost Counter Pill -->
+<div id="boost-counter" class="boost-counter-pill">
+    <span class="boost-dot"></span>
+    <span class="boost-text">
+        <span id="boost-count">100</span> boosts left
+    </span>
+</div>
+
+</body>
+</html>
